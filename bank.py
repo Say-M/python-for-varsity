@@ -87,7 +87,8 @@ class Bank:
             else:
                 print("Insufficient balance\n")
         else:
-            print("Invalid amount")
+            print(
+                f"Invalid amount (min {self.minWithdraw} and max {self.maxWithdraw})\n")
 
     def deposit(self):
         amount = int(input("Enter amount : "))
