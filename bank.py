@@ -4,15 +4,16 @@ import os
 
 class Bank:
     def __init__(self):
-        self.isLoggedIn = False
+        self.isLoggedIn = False  # later we will use this to check if user is logged in or not
         self.minWithdraw = 500
         self.maxWithdraw = 15000
-        self.userIndex = 0
-        self.users = []
-        if (os.path.exists("users.json")):
+        self.userIndex = 0  # index of user in users.json
+        self.users = []  # list of users
+
+        if (os.path.exists("users.json")):  # check if users.json file exists
             with open("users.json", "r") as users:
                 self.users = json.load(users)
-        else:
+        else:  # if users.json file does not exist then create it
             with open("users.json", "w") as users:
                 json.dump(self.users, users)
 
@@ -20,7 +21,7 @@ class Bank:
         print("----Create Account----")
         username = ''
         isUserExist = True
-        while (isUserExist):
+        while (isUserExist):  # check if username already exist
             username = input("Enter username : ")
             for user in self.users:
                 if (user['username'] == username):
@@ -29,9 +30,12 @@ class Bank:
                     break
             else:
                 isUserExist = False
+
+        # if username does not exist then create account
         password = input("Enter password : ")
         balance = int(input("Enter initial balance : "))
 
+        # add user to users.json
         self.users.append({
             "username": username,
             "password": password,
@@ -45,7 +49,7 @@ class Bank:
     def login(self):
         print("----Login----")
         isValid = False
-        while (not isValid):
+        while (not isValid):  # check if username and password is valid
             username = input("Enter username : ")
             password = input("Enter password : ")
             for user in self.users:
@@ -62,6 +66,7 @@ class Bank:
                 print("Invalid username or password\nPlease try again\n")
 
     def logout(self):
+        # reset all variables
         self.username = ''
         self.password = ''
         self.isLoggedIn = False
@@ -69,12 +74,14 @@ class Bank:
 
     def withdraw(self):
         amount = int(input("Enter amount : "))
-        if (amount >= self.minWithdraw and amount <= self.maxWithdraw):
-            if (amount <= self.balance):
+        if (amount >= self.minWithdraw and amount <= self.maxWithdraw):  # check if amount is valid
+            if (amount <= self.balance):  # check if amount is less than available balance
                 self.balance -= amount
                 print(f"Amount {amount} withdrawn successfully")
                 print(f"Available balance is {self.balance}\n")
                 self.users[self.userIndex]['balance'] = self.balance
+
+                # update users.json
                 with open("users.json", "w") as users:
                     json.dump(self.users, users)
             else:
@@ -84,14 +91,17 @@ class Bank:
 
     def deposit(self):
         amount = int(input("Enter amount : "))
-        self.balance += amount
+        self.balance += amount  # add amount to available balance
         print(f"Amount {amount} deposited successfully")
         print(f"Available balance is {self.balance}\n")
         self.users[self.userIndex]['balance'] = self.balance
+
+        # update users.json
         with open("users.json", "w") as users:
             json.dump(self.users, users)
 
     def checkBalance(self):
+        # print account details
         print(f"Account username is {self.username}")
         print(f"Available balance is {self.balance}\n")
 
@@ -112,6 +122,7 @@ def loginMenu():
 choice = 1
 bank = Bank()
 while (choice != 0):
+    # check if user is logged in or not
     if (bank.isLoggedIn):
         loginMenu()
     else:
